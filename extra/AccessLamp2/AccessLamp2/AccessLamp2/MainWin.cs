@@ -11,22 +11,38 @@ using System.IO;
 using System.Security.Permissions;
 using System.Reflection;
 
-namespace AccessLamp
+namespace AccessLamp2
 {
 	public partial class MainWin : Form
 	{
+		#region ALT_F4 抑止
+
+		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+		protected override void WndProc(ref Message m)
+		{
+			const int WM_SYSCOMMAND = 0x112;
+			const long SC_CLOSE = 0xF060L;
+
+			if (m.Msg == WM_SYSCOMMAND && (m.WParam.ToInt64() & 0xFFF0L) == SC_CLOSE)
+				return;
+
+			base.WndProc(ref m);
+		}
+
+		#endregion
+
 		public MainWin()
 		{
 			InitializeComponent();
 		}
 
-		private Icon IconIdle;
-		private Icon IconR;
-		private Icon IconW;
-		private Icon IconRW;
-		private Icon IconBusyR;
-		private Icon IconBusyW;
-		private Icon IconBusyRW;
+		private Image IconIdle;
+		private Image IconR;
+		private Image IconW;
+		private Image IconRW;
+		private Image IconBusyR;
+		private Image IconBusyW;
+		private Image IconBusyRW;
 		public List<PCInfo> PCList = new List<PCInfo>();
 
 		public string GetTTIText()
@@ -57,27 +73,40 @@ namespace AccessLamp
 			catch
 			{ }
 
-			return Path.Combine("..\\..\\..\\..\\icon", localFile);
+			return Path.Combine("..\\..\\..\\..\\..\\..\\icon", localFile);
 		}
 
-		private static Icon LoadIcon(string localFile)
+		private static int Icon_W = 16;
+		private static int Icon_H = 16;
+
+		private static Image LoadIcon_Main(string localFile)
 		{
 			try
 			{
-				return new Icon(GetIconFile(localFile));
+				return Image.FromFile(GetIconFile(localFile));
 			}
 			catch
 			{
 				MessageBox.Show(
 					"アイコンファイル '" + localFile + "' の読み込みに失敗しました。\n" +
 					"作業フォルダまたは実行ファイルと同じフォルダにアイコンファイルが存在することを確認して下さい。",
-					"AccessLamp Error",
+					"AccessLamp2 Error",
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Error
 					);
 
-				return SystemIcons.Error;
+				return SystemIcons.Error.ToBitmap();
 			}
+		}
+
+		private static Image LoadIcon(string localFile)
+		{
+			Image image = LoadIcon_Main(localFile);
+
+			Icon_W = Math.Max(Icon_W, image.Width);
+			Icon_H = Math.Max(Icon_H, image.Height);
+
+			return image;
 		}
 
 		private void MainWin_Load(object sender, EventArgs e)
@@ -153,30 +182,48 @@ namespace AccessLamp
 
 					MessageBox.Show(
 						"パフォーマンスカウンタのオープンに失敗しました。\ndrv: " + sDrv + "\nex: " + firstEx,
-						"AccessLamp Error",
+						"AccessLamp2 Error",
 						MessageBoxButtons.OK,
 						MessageBoxIcon.Error
 						);
 				}
 			}
 
-			this.TaskTrayIcon.Icon = this.IconIdle;
-			this.TaskTrayIcon.Text = this.GetTTIText();
-
 			GC.Collect();
 		}
 
 		private void MainWin_Shown(object sender, EventArgs e)
 		{
-			this.Visible = false;
-			this.TaskTrayIcon.Visible = true;
+			this.Left = Gnd.MainWin_L;
+			this.Top = Gnd.MainWin_T;
+			this.Width = Icon_W;
+			this.Height = Icon_H;
+
+			this.MainPic.Left = 0;
+			this.MainPic.Top = 0;
+			this.MainPic.Width = Icon_W;
+			this.MainPic.Height = Icon_H;
+
+			this.MainPic.Image = this.IconIdle;
+
+			this.BackColor = Color.DarkCyan;
+
+			this.UIRefresh();
+
 			this.MT_Enabled = true;
+		}
+
+		private void MainWin_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Gnd.MainWin_L = this.Left;
+			Gnd.MainWin_T = this.Top;
+
+			Gnd.Save(Gnd.SettingFile);
 		}
 
 		private void MainWin_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			this.MT_Enabled = false;
-			this.TaskTrayIcon.Visible = false;
 
 			foreach (PCInfo info in this.PCList)
 			{
@@ -240,7 +287,7 @@ namespace AccessLamp
 					this.ChainFltr(rf, ref this.Chain_R) ||
 					this.ChainFltr(wf, ref this.Chain_W);
 
-				Icon nextIcon = this.IconIdle;
+				Image nextIcon = this.IconIdle;
 
 				if (sf)
 				{
@@ -271,8 +318,8 @@ namespace AccessLamp
 					}
 				}
 
-				if (this.TaskTrayIcon.Icon != nextIcon)
-					this.TaskTrayIcon.Icon = nextIcon;
+				if (this.MainPic.Image != nextIcon)
+					this.MainPic.Image = nextIcon;
 
 				if (this.MT_Count % 6000 == 0) // 10分毎に実行
 				{
@@ -300,8 +347,6 @@ namespace AccessLamp
 
 				this.PCList[currPCPos].Close();
 				this.PCList.RemoveAt(currPCPos);
-
-				this.TaskTrayIcon.Text = this.GetTTIText();
 			}
 			finally
 			{
@@ -314,6 +359,109 @@ namespace AccessLamp
 		{
 			this.MT_Enabled = false;
 			this.Close();
+		}
+
+		private Point WinMvFrm;
+
+		private void MainWin_MouseDown(object sender, MouseEventArgs e)
+		{
+			// noop
+		}
+
+		private void MainWin_MouseMove(object sender, MouseEventArgs e)
+		{
+			// noop
+		}
+
+		private void MainPic_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (Gnd.PositionFixed == false)
+			{
+				if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+				{
+					this.WinMvFrm = new Point(e.X, e.Y);
+				}
+			}
+		}
+
+		private void MainPic_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (Gnd.PositionFixed == false)
+			{
+				if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
+				{
+					this.Location = new Point(
+						this.Location.X + e.X - this.WinMvFrm.X,
+						this.Location.Y + e.Y - this.WinMvFrm.Y
+						);
+				}
+			}
+		}
+
+		private void UIRefresh()
+		{
+			this.TopMost = Gnd.MostTop;
+
+			this.topMostToolStripMenuItem.Checked = Gnd.MostTop;
+			this.positionFixedToolStripMenuItem.Checked = Gnd.PositionFixed;
+
+			// Background Color
+			{
+				this.blackToolStripMenuItem.Checked = false;
+				this.darkCyanToolStripMenuItem.Checked = false;
+				this.whiteToolStripMenuItem.Checked = false;
+
+				switch (Gnd.BackgroundColor)
+				{
+					case Gnd.BackgroundColor_e.Black:
+						this.BackColor = Color.Black;
+						this.blackToolStripMenuItem.Checked = true;
+						break;
+
+					case Gnd.BackgroundColor_e.DrakCyan:
+						this.BackColor = Color.DarkCyan;
+						this.darkCyanToolStripMenuItem.Checked = true;
+						break;
+
+					case Gnd.BackgroundColor_e.White:
+						this.BackColor = Color.White;
+						this.whiteToolStripMenuItem.Checked = true;
+						break;
+
+					default:
+						throw null; // never
+				}
+			}
+		}
+
+		private void topMostToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Gnd.MostTop = Gnd.MostTop == false;
+			this.UIRefresh();
+		}
+
+		private void positionFixedToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Gnd.PositionFixed = Gnd.PositionFixed == false;
+			this.UIRefresh();
+		}
+
+		private void blackToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Gnd.BackgroundColor = Gnd.BackgroundColor_e.Black;
+			this.UIRefresh();
+		}
+
+		private void darkCyanToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Gnd.BackgroundColor = Gnd.BackgroundColor_e.DrakCyan;
+			this.UIRefresh();
+		}
+
+		private void whiteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Gnd.BackgroundColor = Gnd.BackgroundColor_e.White;
+			this.UIRefresh();
 		}
 	}
 }

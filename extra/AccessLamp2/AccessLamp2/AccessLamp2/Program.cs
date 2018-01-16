@@ -4,8 +4,10 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
+using System.Reflection;
+using System.IO;
 
-namespace AccessLamp
+namespace AccessLamp2
 {
 	static class Program
 	{
@@ -37,6 +39,13 @@ namespace AccessLamp
 				if (mtxOk == false)
 					return;
 			}
+			Gnd.SelfFile = Assembly.GetEntryAssembly().Location;
+			Gnd.SelfDir = Path.GetDirectoryName(Gnd.SelfFile);
+
+			Gnd.SettingFile = Path.Combine(Gnd.SelfDir, Path.GetFileNameWithoutExtension(Gnd.SelfFile) + ".dat");
+
+			Gnd.Load(Gnd.SettingFile);
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainWin());
@@ -51,7 +60,7 @@ namespace AccessLamp
 			{
 				MessageBox.Show(
 					"[Application_ThreadException]\n" + e.Exception,
-					"AccessLamp Error",
+					"AccessLamp2 Error",
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Error
 					);
@@ -68,7 +77,7 @@ namespace AccessLamp
 			{
 				MessageBox.Show(
 					"[CurrentDomain_UnhandledException]\n" + e.ExceptionObject,
-					"AccessLamp Error",
+					"AccessLamp2 Error",
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Error
 					);
