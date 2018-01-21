@@ -15,7 +15,7 @@
 ■動作環境
 
 　Windows 7
-　確認していませんが Windows 8/8.1/10 でも動くかもしれません。
+　Windows 10
 
 　.NET Framework 4 を使用します。
 
