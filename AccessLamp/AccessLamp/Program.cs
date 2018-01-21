@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
+using Microsoft.Win32;
 
 namespace AccessLamp
 {
@@ -17,6 +18,7 @@ namespace AccessLamp
 		{
 			Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+			SystemEvents.SessionEnding += new SessionEndingEventHandler(SessionEnding);
 
 			Mutex mtx = new Mutex(false, "{a6a3ac10-cf4a-48b6-8f53-c949e8db87fb}"); // shared_uuid
 
@@ -37,6 +39,8 @@ namespace AccessLamp
 				if (mtxOk == false)
 					return;
 			}
+			LogTools.Clear();
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainWin());
@@ -44,6 +48,8 @@ namespace AccessLamp
 			mtx.ReleaseMutex();
 			mtx.Close();
 		}
+
+		public static string APP_TITLE = "AccessLamp";
 
 		private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
 		{
@@ -77,6 +83,11 @@ namespace AccessLamp
 			{ }
 
 			Environment.Exit(2);
+		}
+
+		private static void SessionEnding(object sender, SessionEndingEventArgs e)
+		{
+			Environment.Exit(3);
 		}
 	}
 }

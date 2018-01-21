@@ -143,6 +143,8 @@ namespace AccessLamp
 					}
 					catch (Exception ex)
 					{
+						LogTools.Write(ex);
+
 						if (firstEx == null)
 							firstEx = ex;
 					}
@@ -160,8 +162,12 @@ namespace AccessLamp
 				}
 			}
 
+			string ttiText = this.GetTTIText();
+
+			LogTools.Write(ttiText);
+
 			this.TaskTrayIcon.Icon = this.IconIdle;
-			this.TaskTrayIcon.Text = this.GetTTIText();
+			this.TaskTrayIcon.Text = ttiText;
 
 			GC.Collect();
 		}
@@ -171,6 +177,11 @@ namespace AccessLamp
 			this.Visible = false;
 			this.TaskTrayIcon.Visible = true;
 			this.MT_Enabled = true;
+		}
+
+		private void MainWin_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			LogTools.Clear();
 		}
 
 		private void MainWin_FormClosed(object sender, FormClosedEventArgs e)
@@ -290,6 +301,8 @@ namespace AccessLamp
 			}
 			catch (Exception ex)
 			{
+				LogTools.Write(ex);
+
 				if (currPCPos == -1)
 					throw ex;
 
@@ -297,6 +310,8 @@ namespace AccessLamp
 
 				if (this.PCList[currPCPos].ErrorCount < 5) // < 0.5[sec]
 					return;
+
+				LogTools.Write("例外が連発しているので " + this.PCList[currPCPos].Drv + " を閉じます。");
 
 				this.PCList[currPCPos].Close();
 				this.PCList.RemoveAt(currPCPos);

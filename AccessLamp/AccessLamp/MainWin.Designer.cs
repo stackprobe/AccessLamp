@@ -46,12 +46,12 @@
 			this.TTMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.TTMExit});
 			this.TTMenu.Name = "TTIMenu";
-			this.TTMenu.Size = new System.Drawing.Size(99, 26);
+			this.TTMenu.Size = new System.Drawing.Size(94, 26);
 			// 
 			// TTMExit
 			// 
 			this.TTMExit.Name = "TTMExit";
-			this.TTMExit.Size = new System.Drawing.Size(98, 22);
+			this.TTMExit.Size = new System.Drawing.Size(93, 22);
 			this.TTMExit.Text = "Exit";
 			this.TTMExit.Click += new System.EventHandler(this.TTMExit_Click);
 			// 
@@ -69,7 +69,8 @@
 			this.Name = "MainWin";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-			this.Text = "AccessLamp_FourRoses";
+			this.Text = "AccessLamp_MainWindow";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWin_FormClosing);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainWin_FormClosed);
 			this.Load += new System.EventHandler(this.MainWin_Load);
 			this.Shown += new System.EventHandler(this.MainWin_Shown);

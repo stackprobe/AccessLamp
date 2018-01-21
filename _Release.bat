@@ -5,7 +5,7 @@ COPY /B icon\* out
 COPY /B doc\* out
 
 rem C:\Factory\Tools\zcp.exe out C:\app\AccessLamp
-COPY out\AccessLamp.exe C:\app\AccessLamp\.
+rem COPY out\AccessLamp.exe C:\app\AccessLamp\.
 
 C:\Factory\SubTools\zip.exe /O out AccessLamp
 
