@@ -6,7 +6,7 @@ using System.IO;
 
 namespace AccessLamp
 {
-	// 複数のセッションで同時に実行したとき取り合いになるけど、cache してるし、まあいいや。
+	// 複数のセッションで同時に実行したとき取り合いになるけど、catch してるし、まあいいや。
 
 	public class LogTools
 	{
