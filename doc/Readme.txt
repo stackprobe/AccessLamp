@@ -1,86 +1,86 @@
 ===============================================================================
 
-�@�^�X�N�g���C�g�c�c�A�N�Z�X�����v
+　タスクトレイＨＤＤアクセスランプ
 
 ===============================================================================
 
 
-���\�t�g�̊T�v
+■ソフトの概要
 
-�@�^�X�N�g���C�Ƀn�[�h�f�B�X�N�̃A�N�Z�X�󋵂�\������v���O�����ł��B
-�@�A�N�Z�X�󋵂ɉ����ĂV��ނ̃A�C�R����\�����܂��B
-�@�A�C�R���� .ico �t�@�C������ǂݍ���ł���̂ŁA�t�@�C���������ւ��čD���ȃA�C�R���ɕύX���邱�Ƃ��ł��܂��B
-
-
-�������
-
-�@Windows 7
-�@Windows 10
-
-�@.NET Framework 4 ���g�p���܂��B
+　タスクトレイにハードディスクのアクセス状況を表示するプログラムです。
+　アクセス状況に応じて７種類のアイコンを表示します。
+　アイコンは .ico ファイルから読み込んでいるので、ファイルを差し替えて好きなアイコンに変更することができます。
 
 
-���C���X�g�[�����@
+■動作環境
 
-�@�A�[�J�C�u�̒��g�����[�J���f�B�X�N��̔C�ӂ̏ꏊ�ɃR�s�[���ĉ������B
+　Windows 7
+　Windows 10
 
-
-���A���C���X�g�[�����@
-
-�@���W�X�g���Ȃǂ͈�؎g���Ă��܂���B
-�@�t�@�C�����폜���邾���ŃA���C���X�g�[���ł��܂��B
+　.NET Framework 4 を使用します。
 
 
-���N�����@
+■インストール方法
 
-�@AccessLamp.exe �����s���ĉ������B
-
-
-���I�����@
-
-�@�^�X�N�g���C��̃A�C�R�����E�N���b�N���� Exit ��I�����ĉ������B
+　アーカイブの中身をローカルディスク上の任意の場所にコピーして下さい。
 
 
-���A�C�R���t�@�C���ꗗ
+■アンインストール方法
 
-�@Idle.ico          ... �A�N�Z�X����
-�@Read.ico          ... �ǂݍ��ݒ�
-�@Write.ico         ... �������ݒ�
-�@ReadWrite.ico     ... �ǂݏ�����
-�@BusyRead.ico      ... �ǂݍ��ݒ��i�r�W�[��ԁj
-�@BusyWrite.ico     ... �������ݒ��i�r�W�[��ԁj
-�@BusyReadWrite.ico ... �ǂݏ������i�r�W�[��ԁj
-
-�@��200�~���b�ȏ㎝���I���͒f���I�ɃA�N�Z�X���������ꍇ�A�r�W�[��ԂƔ��f���܂��B
-
-�@���A�C�R���t�@�C���͎��s���̃J�����g�f�B���N�g������ AccessLamp.exe �Ɠ����ꏊ�ɒu���ĉ������B
+　レジストリなどは一切使っていません。
+　ファイルを削除するだけでアンインストールできます。
 
 
-���Ď��Ώۃh���C�u���w�肷����@
+■起動方法
 
-�@�R�}���h�����Ƀh���C�u�������w�肷��Ǝw�肵���h���C�u���Ď��ΏۂɂȂ�܂��B
-�@�Œ�f�B�X�N�ȊO���Ď��Ώۂɂł��܂��B
-�@�N����A�Ď��Ɏ��s����Ə���ɊĎ��Ώۂ���O����܂��B
-
-�@���s��
-
-�@�@> AccessLamp C
-
-�@�@�@... C �h���C�u�̂݊Ď��Ώۂɂ���B
-
-�@�@> AccessLamp DFH
-
-�@�@�@... D, F, H �h���C�u���Ď��Ώۂɂ���B
+　AccessLamp.exe を実行して下さい。
 
 
-����舵�����
+■終了方法
 
-�@�t���[�\�t�g
+　タスクトレイ上のアイコンを右クリックして Exit を選択して下さい。
 
 
-����҂ւ̘A����
+■アイコンファイル一覧
 
-�@stackprobes@gmail.com
+　Idle.ico          ... アクセス無し
+　Read.ico          ... 読み込み中
+　Write.ico         ... 書き込み中
+　ReadWrite.ico     ... 読み書き中
+　BusyRead.ico      ... 読み込み中（ビジー状態）
+　BusyWrite.ico     ... 書き込み中（ビジー状態）
+　BusyReadWrite.ico ... 読み書き中（ビジー状態）
 
-�@�o�O��v�]�Ȃǂ��A�����������B
+　※200ミリ秒以上持続的又は断続的にアクセスが続いた場合、ビジー状態と判断します。
+
+　※アイコンファイルは実行時のカレントディレクトリ又は AccessLamp.exe と同じ場所に置いて下さい。
+
+
+■監視対象ドライブを指定する方法
+
+　コマンド引数にドライブ文字を指定すると指定したドライブが監視対象になります。
+　固定ディスク以外も監視対象にできます。
+　起動後、監視に失敗すると勝手に監視対象から外されます。
+
+　実行例
+
+　　> AccessLamp C
+
+　　　... C ドライブのみ監視対象にする。
+
+　　> AccessLamp DFH
+
+　　　... D, F, H ドライブを監視対象にする。
+
+
+■取り扱い種別
+
+　フリーソフト
+
+
+■作者への連絡先
+
+　stackprobes@gmail.com
+
+　バグや要望などご連絡ください。
 
