@@ -8,7 +8,7 @@ namespace AccessLamp
 {
 	// 複数のセッションで同時に実行したとき取り合いになるけど、catch してるし、まあいいや。
 
-	public class LogTools
+	public static class LogTools
 	{
 		private static string LogFile = Path.Combine(Environment.GetEnvironmentVariable("TMP"), "{019a7bcb-bb02-4669-a53f-f0f09cb50575}.log");
 		private static string LogFile0 = LogFile + "0";
