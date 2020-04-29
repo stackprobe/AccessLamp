@@ -9,4 +9,4 @@ rem COPY out\AccessLamp.exe C:\app\AccessLamp\.
 
 C:\Factory\SubTools\zip.exe /O out AccessLamp
 
-PAUSE
+IF NOT "%1" == "/-P" PAUSE
