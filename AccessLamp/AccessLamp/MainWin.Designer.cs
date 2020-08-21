@@ -64,7 +64,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(284, 262);
+			this.ClientSize = new System.Drawing.Size(284, 261);
 			this.Location = new System.Drawing.Point(-400, -400);
 			this.Name = "MainWin";
 			this.ShowInTaskbar = false;
