@@ -7,7 +7,7 @@
 ビルド済み配布物
 ----------------
 
-http://stackprobe.dip.jp/AccessLamp
+http://stackprobe.ccsp.mydns.jp/AccessLamp
 
 
 マニュアル
